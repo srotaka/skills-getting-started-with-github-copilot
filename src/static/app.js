@@ -12,8 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Clear loading message
       activitiesList.innerHTML = "";
-      
-      // Clear activity select dropdown before repopulating
+      // Clear activity dropdown to prevent duplicates
       activitySelect.innerHTML = "";
 
       // Populate activities list
