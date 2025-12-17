@@ -16,7 +16,8 @@ def test_signup_and_unregister():
     activity = "Chess Club"
 
     # Ensure user is not already signed up
-    client.delete(f"/activities/{activity}/unregister", params={"email": test_email})
+    response = client.delete(f"/activities/{activity}/unregister", params={"email": test_email})
+    assert response.status_code in (200, 400)
 
     # Sign up
     response = client.post(f"/activities/{activity}/signup", params={"email": test_email})
