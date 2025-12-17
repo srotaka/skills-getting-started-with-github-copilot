@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Clear loading message and dropdown options
       activitiesList.innerHTML = "";
-      activitySelect.innerHTML = "";
+      activitySelect.replaceChildren();
 
       // Populate activities list
       Object.entries(activities).forEach(([name, details]) => {
@@ -73,6 +73,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target.classList.contains('delete-participant')) {
       const activity = e.target.getAttribute('data-activity');
       const email = e.target.getAttribute('data-email');
+      
+      // Ensure required data attributes exist
+      if (!activity || !email) {
+        console.error('Missing data attributes for delete action');
+        return;
+      }
+      
       if (confirm(`Remove ${email} from ${activity}?`)) {
         try {
           const response = await fetch(`/activities/${encodeURIComponent(activity)}/unregister?email=${encodeURIComponent(email)}`, {
