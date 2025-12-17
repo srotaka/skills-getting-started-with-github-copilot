@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch("/activities");
       const activities = await response.json();
 
-      // Clear loading message
+      // Clear loading message and dropdown options
       activitiesList.innerHTML = "";
       // Clear activity dropdown to prevent duplicates
       activitySelect.innerHTML = "";
@@ -91,6 +91,36 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error fetching activities:", error);
     }
   }
+
+  // Use event delegation for delete participant buttons to avoid duplicate listeners
+  activitiesList.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('delete-participant')) {
+      const activity = e.target.getAttribute('data-activity');
+      const email = e.target.getAttribute('data-email');
+      
+      // Ensure required data attributes exist
+      if (!activity || !email) {
+        console.error('Missing data attributes for delete action');
+        return;
+      }
+      
+      if (confirm(`Remove ${email} from ${activity}?`)) {
+        try {
+          const response = await fetch(`/activities/${encodeURIComponent(activity)}/unregister?email=${encodeURIComponent(email)}`, {
+            method: 'DELETE',
+          });
+          const result = await response.json();
+          if (response.ok) {
+            fetchActivities();
+          } else {
+            alert(result.detail || 'Failed to unregister participant.');
+          }
+        } catch (err) {
+          alert('Failed to unregister participant.');
+        }
+      }
+    }
+  });
 
   // Handle form submission
   signupForm.addEventListener("submit", async (event) => {
