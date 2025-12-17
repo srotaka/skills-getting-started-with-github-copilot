@@ -62,28 +62,29 @@ document.addEventListener("DOMContentLoaded", () => {
         option.value = name;
         option.textContent = name;
         activitySelect.appendChild(option);
-            // Add event listeners for delete icons after rendering
-            document.querySelectorAll('.delete-participant').forEach(icon => {
-              icon.addEventListener('click', async (e) => {
-                const activity = e.target.getAttribute('data-activity');
-                const email = e.target.getAttribute('data-email');
-                if (confirm(`Remove ${email} from ${activity}?`)) {
-                  try {
-                    const response = await fetch(`/activities/${encodeURIComponent(activity)}/unregister?email=${encodeURIComponent(email)}`, {
-                      method: 'DELETE',
-                    });
-                    const result = await response.json();
-                    if (response.ok) {
-                      fetchActivities();
-                    } else {
-                      alert(result.detail || 'Failed to unregister participant.');
-                    }
-                  } catch (err) {
-                    alert('Failed to unregister participant.');
-                  }
-                }
+      });
+
+      // Add event listeners for delete icons after rendering all activities
+      document.querySelectorAll('.delete-participant').forEach(icon => {
+        icon.addEventListener('click', async (e) => {
+          const activity = e.target.getAttribute('data-activity');
+          const email = e.target.getAttribute('data-email');
+          if (confirm(`Remove ${email} from ${activity}?`)) {
+            try {
+              const response = await fetch(`/activities/${encodeURIComponent(activity)}/unregister?email=${encodeURIComponent(email)}`, {
+                method: 'DELETE',
               });
-            });
+              const result = await response.json();
+              if (response.ok) {
+                fetchActivities();
+              } else {
+                alert(result.detail || 'Failed to unregister participant.');
+              }
+            } catch (err) {
+              alert('Failed to unregister participant.');
+            }
+          }
+        });
       });
     } catch (error) {
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
