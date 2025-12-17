@@ -35,3 +35,12 @@ def test_signup_and_unregister():
     # Unregister again should fail
     response = client.delete(f"/activities/{activity}/unregister", params={"email": test_email})
     assert response.status_code == 400
+
+def test_unregister_from_nonexistent_activity():
+    """Test that unregistering from a non-existent activity returns 404"""
+    test_email = "testuser@mergington.edu"
+    nonexistent_activity = "Nonexistent Activity"
+    
+    response = client.delete(f"/activities/{nonexistent_activity}/unregister", params={"email": test_email})
+    assert response.status_code == 404
+    assert "Activity not found" in response.json()["detail"]
